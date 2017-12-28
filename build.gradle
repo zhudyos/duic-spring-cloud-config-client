@@ -51,48 +51,50 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    sign configurations.archives
-}
+if (project.hasProperty("signing.keyId")) {
+    signing {
+        sign configurations.archives
+    }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: System.env.OSSRH_USERNAME, password: System.env.OSSRH_PASSWORD)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: System.env.OSSRH_USERNAME, password: System.env.OSSRH_PASSWORD)
-            }
-
-            pom.project {
-                name "duic-spring-cloud-config-client"
-                artifactId "duic-spring-cloud-config-client"
-                packaging "jar"
-                description "DuiC 统一配置管理 Spring Cloud Client 工具包"
-                url "https://github.com/zhudyos/duic"
-
-                scm {
-                    url "https://github.com/zhudyos/duic.git"
-                    connection "scm:git:git://github.com/zhudyos/duic.git"
-                    developerConnection "scm:git:git@github.com:zhudyos/duic.git"
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: System.env.OSSRH_USERNAME, password: System.env.OSSRH_PASSWORD)
                 }
 
-                licenses {
-                    license {
-                        name "The Apache License, Version 2.0"
-                        url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: System.env.OSSRH_USERNAME, password: System.env.OSSRH_PASSWORD)
+                }
+
+                pom.project {
+                    name "duic-spring-cloud-config-client"
+                    artifactId "duic-spring-cloud-config-client"
+                    packaging "jar"
+                    description "DuiC 统一配置管理 Spring Cloud Client 工具包"
+                    url "https://github.com/zhudyos/duic"
+
+                    scm {
+                        url "https://github.com/zhudyos/duic.git"
+                        connection "scm:git:git://github.com/zhudyos/duic.git"
+                        developerConnection "scm:git:git@github.com:zhudyos/duic.git"
                     }
-                }
 
-                developers {
-                    developer {
-                        id "kevin70"
-                        name "Kevin Zou"
-                        email "kevinz@weghst.com"
+                    licenses {
+                        license {
+                            name "The Apache License, Version 2.0"
+                            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id "kevin70"
+                            name "Kevin Zou"
+                            email "kevinz@weghst.com"
+                        }
                     }
                 }
             }
