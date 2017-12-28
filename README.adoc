@@ -22,7 +22,7 @@ gradle::
 compile "io.zhudy.duic:duic-spring-cloud-config-client:1.0.0"
 ----
 
-DuiC 服务配置::
+DuiC 服务配置 bootstrap.yml::
 [yaml]
 ----
 spring:
