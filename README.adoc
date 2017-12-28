@@ -1,0 +1,52 @@
+https://github.com/zhudyos/duic[DuiC] 统一配置管理 Spring Cloud Client 工具包.
+
+=== 功能
+. 加载 DuiC 配置
+. 定期检查 DuiC 配置更新
+. 支持 spring-cloud 的 `@RefreshScope` 配置热更新
+
+=== 示例
+maven::
+[xml]
+----
+<dependency>
+  <groupId>io.zhudy.duic</groupId>
+  <artifactId>duic-spring-cloud-config-client</artifactId>
+  <version>1.0.0</version>
+</dependency>
+----
+
+gradle::
+[groovy]
+----
+compile "io.zhudy.duic:duic-spring-cloud-config-client:1.0.0"
+----
+
+DuiC 服务配置::
+[yaml]
+----
+spring:
+  application:
+    name: samples # <1>
+
+duic:
+  spring:
+    cloud:
+      config:
+        watch:
+          enabled: true # <2>
+          initialDelay: 10000 # <3>
+          fixedDelay: 10000 # <4>
+        uri: https://duic.zhudy.io/api/v1 # <5>
+        profile: first,second # <6>
+        # token: [TOKEN] # <7>
+----
+<1> 应用名称, 将作为 `DuiC` 的应用名称
+<2> 是否监视服务器配置变化, 开启监视在服务器配置变化时, 应用能够即时更新配置
+<3> 第一次延迟执行时间
+<4> 后续固定的延迟执行时间
+<5> `DuiC` 服务的 `baseUri`
+<6> profile, 多个采用 `,` 分隔
+<7> 如果指定的 `profile` 需要访问令牌认证时需配置 `token`, 多个采用 `,` 分隔
+
+IMPORTANT: `initialDelay` 与 `fixedDelay` 配置名称区分大小写
