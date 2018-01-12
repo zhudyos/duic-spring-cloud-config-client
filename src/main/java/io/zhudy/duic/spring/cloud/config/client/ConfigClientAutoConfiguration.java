@@ -29,8 +29,8 @@ public class ConfigClientAutoConfiguration {
     @Bean
     @ConditionalOnClass(ContextRefresher.class)
     public ConfigWatchService configClientWatch(ContextRefresher contextRefresher, ConfigurableEnvironment environment,
-                                                ConfigClientProperties clientProperties) {
-        return new ConfigWatchService(contextRefresher, environment, clientProperties);
+                                                ConfigClientProperties clientProperties, ConfigWatchProperties configWatchProperties) {
+        return new ConfigWatchService(contextRefresher, environment, clientProperties, configWatchProperties);
     }
 
 }

@@ -8,12 +8,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -27,22 +29,36 @@ public class ConfigWatchService implements Closeable {
     private final ContextRefresher refresher;
     private Environment environment;
     private ConfigClientProperties properties;
+    private ConfigWatchProperties configWatchProperties;
 
     public ConfigWatchService(ContextRefresher refresher, Environment environment,
-                              ConfigClientProperties clientProperties) {
+                              ConfigClientProperties clientProperties, ConfigWatchProperties configWatchProperties) {
         this.refresher = refresher;
         this.environment = environment;
         this.properties = clientProperties;
+        this.configWatchProperties = configWatchProperties;
     }
 
     @PostConstruct
     public void start() {
+        if (configWatchProperties.isEnabled()) {
+            ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+            ses.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        watch();
+                    } catch (Exception e) {
+                        log.warn("监视配置异常", e);
+                    }
+                }
+            }, configWatchProperties.getInitialDelay(), configWatchProperties.getFixedDelay(), TimeUnit.MILLISECONDS);
+        }
+
         this.running.compareAndSet(false, true);
     }
 
-    @Scheduled(initialDelayString = "${duic.spring.cloud.config.watch.initialDelay:60000}",
-            fixedDelayString = "${duic.spring.cloud.config.watch.fixedDelay:60000}")
-    public void watch() {
+    private void watch() {
         if (this.running.get()) {
             String state = environment.getProperty("config.client.state");
             String remoteState = getRemoteState();
