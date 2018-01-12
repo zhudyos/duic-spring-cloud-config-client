@@ -50,17 +50,6 @@ public class ConfigClientProperties {
      */
     private int timeout = 30 * 1000;
 
-    private ConfigClientProperties() {
-    }
-
-    public ConfigClientProperties(Environment environment) {
-        String[] profiles = environment.getActiveProfiles();
-        if (profiles.length == 0) {
-            profiles = environment.getDefaultProfiles();
-        }
-        this.setProfile(StringUtils.arrayToCommaDelimitedString(profiles));
-    }
-
     public ConfigClientProperties override(org.springframework.core.env.Environment environment) {
         ConfigClientProperties override = new ConfigClientProperties();
         BeanUtils.copyProperties(this, override);
