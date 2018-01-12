@@ -35,8 +35,8 @@ duic:
       config:
         watch:
           enabled: true # <2>
-          initialDelay: 10000 # <3>
-          fixedDelay: 10000 # <4>
+          initial_delay: 10000 # <3>
+          fixed_delay: 10000 # <4>
         uri: https://duic.zhudy.io/api/v1 # <5>
         profile: first,second # <6>
         # token: [TOKEN] # <7>
@@ -48,9 +48,3 @@ duic:
 <5> `DuiC` 服务的 `baseUri`
 <6> profile, 多个采用 `,` 分隔
 <7> 如果指定的 `profile` 需要访问令牌认证时需配置 `token`, 多个采用 `,` 分隔
-
-[IMPORTANT]
-====
-. `duic.spring.cloud.config.watch.enabled` 设置为 `true` 时必须启用 `@EnableScheduling`, 因为这里的定时更新是使用 `spring` 的定时任务
-. `initialDelay` 与 `fixedDelay` 配置名称区分大小写
-====
