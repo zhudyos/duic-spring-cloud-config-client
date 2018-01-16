@@ -3,6 +3,7 @@ https://github.com/zhudyos/duic[DuiC] 统一配置管理 Spring Cloud Client 工
 === 功能
 . 加载 DuiC 配置
 . 定期检查 DuiC 配置更新
+. 支持 `@Value` 配置热更新
 . 支持 spring-cloud 的 `@RefreshScope` 配置热更新
 
 === 示例
@@ -12,14 +13,14 @@ maven::
 <dependency>
   <groupId>io.zhudy.duic</groupId>
   <artifactId>duic-spring-cloud-config-client</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
 </dependency>
 ----
 
 gradle::
 [groovy]
 ----
-compile "io.zhudy.duic:duic-spring-cloud-config-client:1.0.1"
+compile "io.zhudy.duic:duic-spring-cloud-config-client:1.1.0"
 ----
 
 DuiC 服务配置 bootstrap.yml::
