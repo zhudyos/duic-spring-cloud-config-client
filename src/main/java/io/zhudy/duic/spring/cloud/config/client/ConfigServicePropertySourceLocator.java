@@ -57,7 +57,6 @@ public class ConfigServicePropertySourceLocator implements PropertySourceLocator
         CompositePropertySource composite = new CompositePropertySource("configService");
         Exception error = null;
         String errorBody = null;
-        log.info("Fetching config from server at: {}", properties.getUri());
 
         try {
             Environment result = getRemoteEnvironment(properties);
@@ -93,22 +92,21 @@ public class ConfigServicePropertySourceLocator implements PropertySourceLocator
     }
 
     private Environment getRemoteEnvironment(ConfigClientProperties properties) {
-        String path = "/ssc/{name}/{profile}";
+        String token = properties.getToken();
         String name = properties.getName();
         String profile = properties.getProfile();
-        String token = properties.getToken();
-        String uri = properties.getUri();
+        String url = properties.getUri() + "/ssc/" + name + "/" + profile;
 
-        Object[] args = new String[]{name, profile};
         ResponseEntity<Environment> response = null;
-
         try {
             HttpHeaders headers = new HttpHeaders();
             if (StringUtils.hasText(token)) {
                 headers.add(TOKEN_HEADER, token);
             }
             RestTemplate restTemplate = RestTemplateUtils.getRestTemplate(properties);
-            response = restTemplate.exchange(uri + path, HttpMethod.GET, null, Environment.class, args);
+
+            log.info("Fetching config from server at: {}", url);
+            response = restTemplate.exchange(url, HttpMethod.GET, null, Environment.class);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() != HttpStatus.NOT_FOUND) {
                 throw e;

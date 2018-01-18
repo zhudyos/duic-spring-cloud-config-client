@@ -3,10 +3,8 @@ package io.zhudy.duic.spring.cloud.config.client;
 import io.zhudy.duic.spring.cloud.config.environment.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.core.env.Environment;
@@ -87,18 +85,15 @@ public class ConfigWatchService implements Closeable {
     }
 
     private String getRemoteState() {
-        String path = "/apps/states/{name}/{profile}";
         String name = properties.getName();
         String profile = properties.getProfile();
-        String uri = properties.getUri();
+        String url = properties.getUri() + "/apps/states/" + name + "/" + profile;
 
-        log.debug("Checking config state from server at: {}", properties.getUri());
-
-        Object[] args = new String[]{name, profile};
         ResponseEntity<State> response = null;
         try {
             RestTemplate restTemplate = RestTemplateUtils.getRestTemplate(properties);
-            response = restTemplate.exchange(uri + path, HttpMethod.GET, null, State.class, args);
+            log.debug("Checking config state from server at: {} {}", url);
+            response = restTemplate.exchange(url, HttpMethod.GET, null, State.class);
         } catch (Exception e) {
             log.warn("Checking config state failed: {}", e.getMessage());
         }
