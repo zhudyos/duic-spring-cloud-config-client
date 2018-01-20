@@ -13,14 +13,14 @@ maven::
 <dependency>
   <groupId>io.zhudy.duic</groupId>
   <artifactId>duic-spring-cloud-config-client</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ----
 
 gradle::
 [groovy]
 ----
-compile "io.zhudy.duic:duic-spring-cloud-config-client:1.1.0"
+compile "io.zhudy.duic:duic-spring-cloud-config-client:1.2.0"
 ----
 
 DuiC 服务配置 bootstrap.yml::
