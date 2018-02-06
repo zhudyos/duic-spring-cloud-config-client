@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +19,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static io.zhudy.duic.spring.cloud.config.client.ConfigClientProperties.TOKEN_HEADER;
 
 /**
  * @author Kevin Zou (kevinz@weghst.com)
@@ -85,15 +86,23 @@ public class ConfigWatchService implements Closeable {
     }
 
     private String getRemoteState() {
+        String token = properties.getToken();
         String name = properties.getName();
         String profile = properties.getProfile();
         String url = properties.getUri() + "/apps/states/" + name + "/" + profile;
 
         ResponseEntity<State> response = null;
         try {
+            HttpHeaders headers = new HttpHeaders();
+            if (StringUtils.hasText(token)) {
+                headers.add(TOKEN_HEADER, token);
+            }
+
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
             RestTemplate restTemplate = RestTemplateUtils.getRestTemplate(properties);
+
             log.debug("Checking config state from server at: {} {}", url);
-            response = restTemplate.exchange(url, HttpMethod.GET, null, State.class);
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, State.class);
         } catch (Exception e) {
             log.warn("Checking config state failed: {}", e.getMessage());
         }

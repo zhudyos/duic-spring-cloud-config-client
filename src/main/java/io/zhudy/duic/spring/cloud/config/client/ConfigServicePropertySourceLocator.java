@@ -103,10 +103,12 @@ public class ConfigServicePropertySourceLocator implements PropertySourceLocator
             if (StringUtils.hasText(token)) {
                 headers.add(TOKEN_HEADER, token);
             }
+
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
             RestTemplate restTemplate = RestTemplateUtils.getRestTemplate(properties);
 
             log.info("Fetching config from server at: {}", url);
-            response = restTemplate.exchange(url, HttpMethod.GET, null, Environment.class);
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, Environment.class);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() != HttpStatus.NOT_FOUND) {
                 throw e;

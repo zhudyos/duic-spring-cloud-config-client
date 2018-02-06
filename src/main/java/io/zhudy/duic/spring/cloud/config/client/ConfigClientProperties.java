@@ -17,7 +17,7 @@ import org.springframework.util.StringUtils;
 public class ConfigClientProperties {
 
     public static final String PREFIX = "duic.spring.cloud.config";
-    public static final String TOKEN_HEADER = "X-Config-Token";
+    public static final String TOKEN_HEADER = "x-config-token";
 
     /**
      * 是否启用.
