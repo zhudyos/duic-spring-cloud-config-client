@@ -49,14 +49,11 @@ public class ConfigWatchService implements Closeable {
     public void start() {
         if (configWatchProperties.isEnabled()) {
             ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-            ses.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        watch();
-                    } catch (Exception e) {
-                        log.warn("监视配置异常", e);
-                    }
+            ses.scheduleAtFixedRate(() -> {
+                try {
+                    watch();
+                } catch (Exception e) {
+                    log.warn("监视配置异常", e);
                 }
             }, configWatchProperties.getInitialDelay(), configWatchProperties.getFixedDelay(), TimeUnit.MILLISECONDS);
         }

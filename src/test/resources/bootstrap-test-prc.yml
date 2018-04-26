@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: samples
+
+duic:
+  spring:
+    cloud:
+      config:
+        watch:
+          enabled: true
+          initial-delay: 10000
+          fixed-delay: 10000
+        uri: http://127.0.0.1:${mock.server.port}/api/v1
+        profile: first

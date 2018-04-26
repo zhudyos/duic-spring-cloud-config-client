@@ -16,26 +16,38 @@ apply plugin: 'signing'
 
 group "io.zhudy.duic"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
 repositories {
     mavenLocal()
+    maven {
+        url 'https://repo.spring.io/libs-milestone'
+    }
     mavenCentral()
+}
+
+ext {
+    springVersion = "5.0.5.RELEASE"
+    springBootVersion = "2.0.1.RELEASE"
+    springCloudVersion = "2.0.0.RC1"
 }
 
 dependencies {
     compileOnly "org.projectlombok:lombok:1.16.18"
-    compileOnly "org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE"
+    compileOnly "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
 
     compile "org.slf4j:slf4j-api:1.7.25"
     compile "com.fasterxml.jackson.core:jackson-databind:2.9.3"
-    compile "org.springframework.cloud:spring-cloud-context:1.3.0.RELEASE"
-    compile "org.springframework:spring-web:4.3.13.RELEASE"
+    compile "org.springframework:spring-web:$springVersion"
+    compile "org.springframework.cloud:spring-cloud-context:$springCloudVersion"
+
+    testCompile "com.squareup.okhttp3:mockwebserver:3.10.0"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 
     apt "org.projectlombok:lombok:1.16.18"
-    apt "org.springframework.boot:spring-boot-configuration-processor:1.5.9.RELEASE"
+    apt "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
 }
 
 task javadocJar(type: Jar) {
