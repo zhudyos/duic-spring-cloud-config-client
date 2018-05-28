@@ -48,7 +48,7 @@ public class ConfigClientProperties {
     /**
      * 超时时间.
      */
-    private int timeout = 30 * 1000;
+    private int timeout = 60 * 1000;
 
     public ConfigClientProperties override(org.springframework.core.env.Environment environment) {
         ConfigClientProperties override = new ConfigClientProperties();

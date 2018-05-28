@@ -10,7 +10,7 @@ class RestTemplateUtils {
 
     static RestTemplate getRestTemplate(ConfigClientProperties properties) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setReadTimeout(properties.getTimeout());
+        requestFactory.setConnectTimeout(properties.getTimeout());
         requestFactory.setReadTimeout(properties.getTimeout());
         return new RestTemplate(requestFactory);
     }

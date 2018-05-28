@@ -15,9 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.zhudy.duic.spring.cloud.config.client.ConfigClientProperties.TOKEN_HEADER;
@@ -34,37 +31,37 @@ public class ConfigWatchService implements Closeable {
     private Environment environment;
     private ConfigurableListableBeanFactory beanFactory;
     private ConfigClientProperties properties;
-    private ConfigWatchProperties configWatchProperties;
 
     public ConfigWatchService(ContextRefresher refresher, Environment environment, ConfigurableListableBeanFactory beanFactory,
-                              ConfigClientProperties clientProperties, ConfigWatchProperties configWatchProperties) {
+                              ConfigClientProperties clientProperties) {
         this.refresher = refresher;
         this.environment = environment;
         this.beanFactory = beanFactory;
         this.properties = clientProperties;
-        this.configWatchProperties = configWatchProperties;
     }
 
     @PostConstruct
     public void start() {
-        if (configWatchProperties.isEnabled()) {
-            ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-            ses.scheduleAtFixedRate(() -> {
-                try {
-                    watch();
-                } catch (Exception e) {
-                    log.warn("监视配置异常", e);
-                }
-            }, configWatchProperties.getInitialDelay(), configWatchProperties.getFixedDelay(), TimeUnit.MILLISECONDS);
-        }
-
         this.running.compareAndSet(false, true);
+
+        new Thread("duic-watch-config-state") {
+            @Override
+            public void run() {
+                for (; ; ) {
+                    try {
+                        watch();
+                    } catch (Exception e) {
+                        log.error("监控配置状态异常", e);
+                    }
+                }
+            }
+        };
     }
 
     private void watch() {
         if (this.running.get()) {
             String state = environment.getProperty("config.client.state");
-            String remoteState = getRemoteState();
+            String remoteState = watchState(state);
 
             if (remoteState != null && !remoteState.equals(state)) {
                 log.info("Reloading config: name={}, profiles={}, state={}, remoteState={}", properties.getName(),
@@ -82,11 +79,11 @@ public class ConfigWatchService implements Closeable {
         }
     }
 
-    private String getRemoteState() {
+    private String watchState(String state) {
         String token = properties.getToken();
         String name = properties.getName();
         String profile = properties.getProfile();
-        String url = properties.getUri() + "/apps/states/" + name + "/" + profile;
+        String url = properties.getUri() + "/apps/watches/" + name + "/" + profile + "?state=" + state;
 
         ResponseEntity<State> response = null;
         try {
@@ -94,6 +91,7 @@ public class ConfigWatchService implements Closeable {
             if (StringUtils.hasText(token)) {
                 headers.add(TOKEN_HEADER, token);
             }
+            headers.add(HttpHeaders.CONNECTION, "keep-alive");
 
             HttpEntity<Void> entity = new HttpEntity<>(headers);
             RestTemplate restTemplate = RestTemplateUtils.getRestTemplate(properties);

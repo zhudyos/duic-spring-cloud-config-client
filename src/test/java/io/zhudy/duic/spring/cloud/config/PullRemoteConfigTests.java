@@ -35,7 +35,7 @@ public class PullRemoteConfigTests {
             public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
                 String path = request.getPath();
                 MockResponse response = null;
-                if (path.equals("/api/v1/apps/states/samples/first")) {
+                if (path.equals("/api/v1/apps/watches/samples/first")) {
                     response = new MockResponse();
                     response.addHeader("content-type", "application/json; utf-8");
                     response.setBody("{\"state\":\"1\"}");
