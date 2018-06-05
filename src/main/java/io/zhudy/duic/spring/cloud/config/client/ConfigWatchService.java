@@ -44,7 +44,7 @@ public class ConfigWatchService implements Closeable {
     public void start() {
         this.running.compareAndSet(false, true);
 
-        new Thread("duic-watch-config-state") {
+        Thread t = new Thread("duic-watch-config-state") {
             @Override
             public void run() {
                 for (; ; ) {
@@ -56,6 +56,8 @@ public class ConfigWatchService implements Closeable {
                 }
             }
         };
+        t.setDaemon(true);
+        t.start();
     }
 
     private void watch() {
