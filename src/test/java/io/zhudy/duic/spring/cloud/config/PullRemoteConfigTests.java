@@ -30,12 +30,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Kevin Zou (kevinz@weghst.com)
  */
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @ActiveProfiles("test-prc")
 @SpringBootTest(classes = RemoteConfigProperties.class)
 public class PullRemoteConfigTests {
@@ -74,18 +73,18 @@ public class PullRemoteConfigTests {
         }
     }
 
-    //    @Autowired
+//    @Autowired
 //    private ConfigurationPropertiesBindingPostProcessor bindingPostProcessor;
-    @Value("${a}")
-    private String a;
+//    @Value("${a}")
+//    private String a;
 
-    @Test
-    public void execute1() {
-        assertEquals(a, "b");
-
+//    @Test
+//    public void execute1() {
+//        assertEquals(a, "b");
+//
 //        RemoteConfigProperties configProperties = new RemoteConfigProperties();
 //        configProperties = (RemoteConfigProperties) bindingPostProcessor.postProcessBeforeInitialization(configProperties, "remoteConfigProperties");
 //        assertEquals(a, configProperties.getA());
-    }
+//    }
 
 }
