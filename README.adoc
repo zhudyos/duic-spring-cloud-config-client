@@ -1,4 +1,4 @@
-https://github.com/zhudyos/duic[duic] 配置中心 Spring Cloud Client 工具包。
+https://github.com/zhudyos/duic[duic] 配置中心 spring-cloud-config 工具包。
 
 = 功能
 . 加载 duic 配置。
