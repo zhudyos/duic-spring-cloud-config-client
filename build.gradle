@@ -56,6 +56,9 @@ license {
         author = "the original author or authors"
     }
 }
+tasks.withType(com.hierynomus.gradle.license.tasks.LicenseCheck) {
+    it.enabled = false
+}
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
