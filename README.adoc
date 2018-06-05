@@ -36,7 +36,7 @@ duic:
         profile: first,second             # <3>
         # token: [TOKEN]                  # <4>
 ----
-<1> 应用名称，将作为 `duic` 的应用名称。
-<2> `duic` 服务的 `baseUri`。
+<1> 应用名称，将作为 **duic** 的应用名称。
+<2> **duic** 服务的 **baseUri**。
 <3> profile，多个采用 `,` 分隔。
-<4> 如果指定的 `profile` 需要访问令牌认证时需配置 `token`, 多个采用 `,` 分隔。
+<4> 如果指定的 **profile** 需要访问令牌认证时需配置 **token**，多个采用 `,` 分隔。
