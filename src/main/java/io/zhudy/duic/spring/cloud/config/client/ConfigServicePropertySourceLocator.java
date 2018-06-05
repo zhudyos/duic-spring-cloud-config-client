@@ -25,6 +25,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.http.*;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -48,6 +49,13 @@ public class ConfigServicePropertySourceLocator implements PropertySourceLocator
     private ConfigClientProperties defaultProperties;
 
     public ConfigServicePropertySourceLocator(ConfigClientProperties defaultProperties) {
+        Assert.hasLength(defaultProperties.getUri(),
+                "\"duic.spring.cloud.config.uri\" 不能为空，请在 bootstrap.yml 文件中配置");
+        Assert.hasLength(defaultProperties.getName(),
+                "\"duic.spring.cloud.config.name\" 不能为空，请在 bootstrap.yml 文件中配置");
+        Assert.hasLength(defaultProperties.getProfile(),
+                "\"duic.spring.cloud.config.profile\" 不能为空，请在 bootstrap.yml 文件中配置");
+
         this.defaultProperties = defaultProperties;
     }
 
