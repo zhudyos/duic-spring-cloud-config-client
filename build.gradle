@@ -8,11 +8,13 @@ buildscript {
 plugins {
     id "net.ltgt.apt" version "0.10"
     id "net.researchgate.release" version "2.6.0"
+    id "com.github.hierynomus.license" version "0.14.0"
 }
 
 apply plugin: "java"
 apply plugin: "maven"
 apply plugin: 'signing'
+apply plugin: "com.github.hierynomus.license"
 
 group "io.zhudy.duic"
 
@@ -22,16 +24,13 @@ targetCompatibility = 1.8
 
 repositories {
     mavenLocal()
-    maven {
-        url 'https://repo.spring.io/libs-milestone'
-    }
     mavenCentral()
 }
 
 ext {
     springVersion = "5.0.5.RELEASE"
     springBootVersion = "2.0.1.RELEASE"
-    springCloudVersion = "2.0.0.RC1"
+    springCloudVersion = "1.3.3.RELEASE"
 }
 
 dependencies {
@@ -48,6 +47,14 @@ dependencies {
 
     apt "org.projectlombok:lombok:1.16.18"
     apt "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+}
+
+license {
+    headerURI = com.hierynomus.gradle.license.LicenseBasePlugin.class.getClassLoader().getResource("headers/Apache-2.0").toURI()
+    ext {
+        year = "2017-${Calendar.getInstance().get(Calendar.YEAR)}"
+        author = "the original author or authors"
+    }
 }
 
 task javadocJar(type: Jar) {
