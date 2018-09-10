@@ -94,7 +94,9 @@ public class ConfigServicePropertySourceLocator implements PropertySourceLocator
             error = e;
         }
 
-        log.warn("Could not locate PropertySource: {}", (errorBody == null ? error == null ? "no error message" : error.getMessage() : errorBody));
+        log.warn("Could not locate PropertySource: {}",
+                (errorBody == null ? error == null ? "no error message" : error.getMessage() : errorBody),
+                error);
         return null;
     }
 
