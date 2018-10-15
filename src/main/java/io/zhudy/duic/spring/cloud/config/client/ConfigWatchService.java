@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.zhudy.duic.spring.cloud.config.client.ConfigClientProperties.TOKEN_HEADER;
@@ -79,6 +80,14 @@ public class ConfigWatchService implements Closeable {
         if (this.running.get()) {
             String state = environment.getProperty("config.client.state");
             String remoteState = watchState(state);
+            if (remoteState == null) {
+                try {
+                    // 如果未获取到远程配置状态，则睡眠1秒防止远程不可用时连续请求
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
+            }
 
             if (remoteState != null && !remoteState.equals(state)) {
                 log.info("Reloading config: name={}, profiles={}, state={}, remoteState={}", properties.getName(),
@@ -116,7 +125,7 @@ public class ConfigWatchService implements Closeable {
             log.debug("Checking config state from server at: {} {}", url);
             response = restTemplate.exchange(url, HttpMethod.GET, entity, State.class);
         } catch (Exception e) {
-            log.warn("Checking config state failed: {}", e.getMessage());
+            log.warn("Checking config state failed: {}", e);
         }
 
         if (response == null || response.getStatusCode() != HttpStatus.OK) {
